@@ -13,10 +13,10 @@ module.exports = {
         })
 
         mongoose.connection.on('connected', () => {
-            console.log(logs.DatabaseConnected)
+            console.log(logs.databaseConnected)
         })
         mongoose.connection.on('error', function(err) {
-            console.error(logs.DatabaseFailed);
+            console.error(logs.databaseFailed);
             throw err
         });
     }
