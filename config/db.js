@@ -1,20 +1,24 @@
 const mongoose = require('mongoose')
-const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}${process.env.DB_URI}`;
+const dbUri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}${process.env.DB_URI}`;
+const logs = require('../helpers/logs')
             
-module.exports = () => {
+module.exports = {
 
-    mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useFindAndModify: false,
-        useCreateIndex: true,
-        useUnifiedTopology: true 
-    })
+    setup: () => {
+        mongoose.connect(dbUri, {
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            useCreateIndex: true,
+            useUnifiedTopology: true 
+        })
 
-    mongoose.connection.on('connected', () => {
-        console.log('DB STATUS    : '+ 'CONNECTED'.cyan)
-    })
-    mongoose.connection.on('error', function(err) {
-        console.error('DB STATUS    ' + 'FAILED'.brightRed);
-    });
+        mongoose.connection.on('connected', () => {
+            console.log(logs.DatabaseConnected)
+        })
+        mongoose.connection.on('error', function(err) {
+            console.error(logs.DatabaseFailed);
+            throw err
+        });
+    }
 
 }

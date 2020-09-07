@@ -1,6 +1,8 @@
 const express = require('express')
+require('./config/env')
+
 const app = require('./config/app')(express())
-const colors = require('colors')
+const logs = require('./helpers/logs')
 const port = process.env.PORT || 3000
 
-app.listen(port, async () => { await console.log(`SERVER PORT  : ${port.cyan}`)})
+app.listen(port, () => console.log(logs.ServerRunning))
