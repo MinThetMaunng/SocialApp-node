@@ -1,4 +1,5 @@
 const User = require('./../models/User')
+const jwt = require('jsonwebtoken')
 
 const create = async ({email, password}) => {
     try {
@@ -16,14 +17,17 @@ const create = async ({email, password}) => {
 
 const login = async ({email, password}) => {
     try {
-        let user = await User.findOne({ email })
+        let user = await User.findOne({ email }).select(' -createdAt -updatedAt -__v')
         if(!user) {
             return {status: 400, data: null, message: 'This email has not registered!'}
         }
 
         let isAuthenticated = await user.authenticate(password)
         if(isAuthenticated) {
-            return {status: 200, data: user}
+            let { _id, email } = user
+            let token = jwt.sign({_id, email}, process.env.JWT_SECRET)
+            let data = { _id, email, token}
+            return {status: 200, data}
         }
 
         return {status: 403, data: null, message: "Password is incorrect."}
