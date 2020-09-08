@@ -4,7 +4,11 @@ require('./config/env')
 const app = require('./config/app')(express())
 const logs = require('./helpers/logs')
 const port = process.env.PORT || 3000
+const userRoutes = require('./routes/UserRoutes')
+const postRoutes = require('./routes/PostRoutes')
 
+app.use('/users', userRoutes)
+app.use('/posts', postRoutes)
 app.listen(port, () => {
     console.log(logs.serverRunning)
     console.log(logs.environment)
