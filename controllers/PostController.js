@@ -1,6 +1,6 @@
 const postService = require('../services/PostService')
 
-const getAll = async (req, res) => {
+const getAll = async (req, res, next) => {
     const { status, data, message } = await postService.getAll()
     res.status(status).json({data, message})
 }

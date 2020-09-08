@@ -11,7 +11,8 @@ const create = async ({email, password}) => {
             return {status: 201, data: newUser}
         }
     } catch(err) {
-        return { status: 500, data: null, message: err}
+        console.error(`Error in signup route ${err}`)
+        return { status: 500, data: null, message: "Internal Server Error"}
     }
 }
 
@@ -25,14 +26,14 @@ const login = async ({email, password}) => {
         let isAuthenticated = await user.authenticate(password)
         if(isAuthenticated) {
             let { _id, email } = user
-            let token = jwt.sign({_id, email}, process.env.JWT_SECRET)
+            let token = jwt.sign({_id, email}, process.env.JWT_SECRET,{expiresIn: "20s"})
             let data = { _id, email, token}
             return {status: 200, data}
         }
 
-        return {status: 403, data: null, message: "Password is incorrect."}
+        return {status: 401, data: null, message: "Password is incorrect."}
     } catch(err) {
-        console.log(err)
+        console.error(`Error in login route ${err}`)
         return { status: 500, data: null, message: "Error in logging in."}
     }
 }

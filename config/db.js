@@ -17,7 +17,7 @@ module.exports = {
         })
         mongoose.connection.on('error', function(err) {
             console.error(logs.databaseFailed);
-            throw err
+            throw new Error(err)
         });
     }
 

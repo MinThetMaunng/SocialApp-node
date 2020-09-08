@@ -34,10 +34,11 @@ UserSchema.pre('save', function(next) {
     next()
 })
 
+
 UserSchema.methods.authenticate = async function(password) {
     return bcrypt.compareSync(password, this.password, function(err, res) {
         if(err) {
-            console.log(err)
+            console.log("Error in authenticate")
             throw error
         }
         return res
