@@ -10,7 +10,7 @@ const authenticate = async (req, res, next) => {
         req.user = decode
         next()
     } catch(err) {
-        return res.status(403).json({data: null, message: "Forbidden!"})
+        return res.status(403).json({data: null, message: "Token expired!"})
     }
 }
 
