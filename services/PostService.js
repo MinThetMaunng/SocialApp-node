@@ -3,9 +3,8 @@ const Post = require('../models/Post')
 const getAll = async () => {
     try {
         let posts = await Post.find().select('-createdAt -updatedAt -password -__v').populate('user', '-createdAt -updatedAt -password -__v')
-        let count = await Post.countDocuments()
-        let data = {data: posts, total: count}
-        return { status: 200, data }
+        let total = await Post.countDocuments()
+        return { status: 200, data: posts, total }
     } catch(err) {
         console.error(`Error in gell all post routes ${err}`)
         return { status: 500, data: null, message: "Internal Server Error"}
@@ -21,9 +20,10 @@ const getOne = async (_id) => {
     }
 }
 
-const create = async (body) => {
+const create = async (user, text) => {
     try {
-        let newPost = await Post.create(body)
+        let newPost = new Post({user, text})
+        await newPost.save()
         return { status: 201, data: newPost}
     } catch(err) {
         console.error(`Error in gell all post routes ${err}`)

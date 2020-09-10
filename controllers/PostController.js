@@ -1,13 +1,13 @@
 const postService = require('../services/PostService')
 
 const getAll = async (req, res, next) => {
-    const { status, data, message } = await postService.getAll()
-    res.status(status).json({data, message})
+    const result = await postService.getAll()
+    res.status(result.status).json(result)
 }
 
 const create = async (req, res) => {
-    const { status, data, message } = await postService.create(req.body)
-    res.status(status).json({data, message})
+    const result = await postService.create(req.user._id, req.body.text)
+    res.status(result.status).json(result)
 }
 
 module.exports = { getAll, create}
