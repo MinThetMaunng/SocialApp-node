@@ -1,13 +1,13 @@
 const User = require('./../models/User')
 const jwt = require('jsonwebtoken')
 
-const create = async ({email, password}) => {
+const create = async (body) => {
     try {
-        let users = await User.find({ email })
+        let users = await User.find({ email: body.email })
         if(users.length) {
             return {status: 400, data: null, message: 'This email is already registered!'}
         } else {
-            let newUser = await User.create({email, password})
+            let newUser = await User.create(body)
             return {status: 201, data: newUser}
         }
     } catch(err) {
