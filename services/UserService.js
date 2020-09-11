@@ -7,8 +7,11 @@ const create = async (body) => {
         if(users.length) {
             return {status: 400, data: null, message: 'This email is already registered!'}
         } else {
-            let newUser = await User.create(body)
-            return {status: 201, data: newUser}
+            let {_id, email, firstName, middleName, lastName} = await User.create(body)
+            let token = jwt.sign({_id, email}, process.env.JWT_SECRET,{expiresIn: "2 days"})
+            const data = { _id, email, firstName, middleName, lastName, token }
+            
+            return {status: 200, data}
         }
     } catch(err) {
         console.error(`Error in signup route ${err}`)
