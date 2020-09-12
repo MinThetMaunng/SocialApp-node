@@ -28,9 +28,9 @@ const login = async ({email, password}) => {
 
         let isAuthenticated = await user.authenticate(password)
         if(isAuthenticated) {
-            let { _id, email } = user
+            let { _id, email, firstName, middleName, lastName } = user
             let token = jwt.sign({_id, email}, process.env.JWT_SECRET,{expiresIn: "2 days"})
-            let data = { _id, email, token}
+            let data = { _id, email, firstName, middleName, lastName, token}
             return {status: 200, data}
         }
 
