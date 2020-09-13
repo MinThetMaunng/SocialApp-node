@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const timestamp = require('mongoose-timestamp')
-
+const opts = { toJSON: { virtuals: true, versionKey: false } }
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -26,6 +26,20 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+}, opts)
+
+
+UserSchema.virtual('fullName').get(function() {
+    let fullNameString = this.firstName
+
+    if(this.middleName != "") {
+        fullNameString += ` ${this.middleName}`
+    }
+    if(this.lastName != "") {
+        fullNameString += ` ${this.lastName}`
+    }
+
+    return fullNameString
 })
 
 UserSchema.pre('save', function(next) {
@@ -35,7 +49,6 @@ UserSchema.pre('save', function(next) {
     user.password = hash
     next()
 })
-
 
 UserSchema.methods.authenticate = async function(password) {
     return bcrypt.compareSync(password, this.password, function(err, res) {

@@ -1,4 +1,11 @@
 const Post = require('../models/Post')
+const AWS = require('aws-sdk')
+const shortid = require('shortid')
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_KEY
+})
 
 const getAll = async () => {
     try {
@@ -20,10 +27,35 @@ const getOne = async (_id) => {
     }
 }
 
-const create = async (user, text) => {
+const uploadFile = async (file) => {
+
+    const splittedString = file.mimetype.split('/')
+    const imageName = `${shortid.generate()}.${splittedString[1]}`
+    
+    const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: imageName,
+        Body: file.buffer,
+        ACL: 'public-read'
+    }
+
+    await s3.upload(params, function(err, result) {
+        if(err) {
+            throw new Error(err)
+        }
+    })
+    return imageName
+}
+
+const create = async (user, text, file) => {
     try {
-        let newPost = new Post({user, text})
+        let imageName 
+        if(file) {
+            imageName = await uploadFile(file)
+        }
+        let newPost = new Post({user, text, imageName})
         await newPost.save()
+
         return { status: 201, data: newPost}
     } catch(err) {
         console.error(`Error in gell all post routes ${err}`)
@@ -31,4 +63,4 @@ const create = async (user, text) => {
     }
 }
 
-module.exports = { getAll, getOne, create }
+module.exports = { getAll, getOne, create, uploadFile }
