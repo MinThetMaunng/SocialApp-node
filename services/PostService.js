@@ -9,7 +9,7 @@ const s3 = new AWS.S3({
 
 const getAll = async () => {
     try {
-        let posts = await Post.find({}, {id: -1}).select('-createdAt -updatedAt -password -__v -id').populate('user', '-createdAt -updatedAt -password -__v -id')
+        let posts = await Post.find().select('-createdAt -updatedAt -__v').populate('user', ' -password -__v').sort("-createdAt")
         let total = await Post.countDocuments()
         return { status: 200, data: posts, total }
     } catch(err) {
