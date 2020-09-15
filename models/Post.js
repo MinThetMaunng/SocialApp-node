@@ -25,6 +25,7 @@ PostSchema.virtual('imageUrl').get(function() {
     return `${process.env.IMAGE_BASE_URL}${this.imageName}`
 })
 
+PostSchema.set('id', false)
 PostSchema.plugin(timestamp)
 
 module.exports = mongoose.model("Post", PostSchema, "posts")

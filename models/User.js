@@ -60,6 +60,7 @@ UserSchema.methods.authenticate = async function(password) {
     })
 }
 
+UserSchema.set('id', false)
 UserSchema.plugin(timestamp)
 
 module.exports = mongoose.model("User", UserSchema, "users")
