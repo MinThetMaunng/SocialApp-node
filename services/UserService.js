@@ -8,7 +8,8 @@ const create = async (body) => {
             return {status: 400, data: null, message: 'This email is already registered!'}
         } else {
             let {_id, email, firstName, middleName, lastName} = await User.create(body)
-            let token = jwt.sign({_id, email}, process.env.JWT_SECRET,{expiresIn: "2 days"})
+        
+            let token = signJwt(_id, email)
             const data = { _id, email, firstName, middleName, lastName, token }
             
             return {status: 200, data}
@@ -30,7 +31,7 @@ const login = async ({email, password}) => {
         if(isAuthenticated) {
             let { _id, email, firstName, middleName, lastName, fullName } = user
 
-            let token = jwt.sign({_id, email}, process.env.JWT_SECRET,{expiresIn: "2 days"})
+            let token = signJwt(_id, email)
             let data = { _id, email, firstName, middleName, lastName, fullName, token}
             return {status: 200, data}
         }
@@ -42,5 +43,7 @@ const login = async ({email, password}) => {
         return { status: 500, data: null, message: "Error in logging in."}
     }
 }
+
+const signJwt = (_id, email) => jwt.sign({_id, email}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE_TIME})
 
 module.exports = { create, login }

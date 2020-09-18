@@ -20,6 +20,11 @@ const uploadFile = async (req, res) => {
     res.status(result.status).json(result)
 }
 
+const remove = async (req, res) => {
+    const result = await postService.remove(req.params.id, req.user._id)
+    res.status(result.status).json(result)
+}
 
 
-module.exports = { getAll, create, getOne, uploadFile}
+
+module.exports = { getAll, create, getOne, uploadFile, remove}

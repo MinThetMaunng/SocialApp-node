@@ -63,4 +63,18 @@ const create = async (user, text, file) => {
     }
 }
 
-module.exports = { getAll, getOne, create, uploadFile }
+const remove = async (_id, userId) => {
+    try {
+        let post = await Post.findOne({_id, user: userId})
+        if(!post) {
+            return { status: 403, data: null, message: "This user is not authorized to take this action."}
+        }
+        await post.remove()
+        return { status: 200, data: null}
+    } catch(err) {
+        console.log(`Error in deleteing post ${err}`)
+        return { status: 500, data: null, message: "Internal Server Error"}
+    }
+}
+
+module.exports = { getAll, getOne, create, uploadFile, remove }
