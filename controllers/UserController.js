@@ -10,4 +10,9 @@ const login = async (req, res) => {
     res.status(result.status).json(result)
 }
 
-module.exports = { signup, login }
+const search = async (req, res) => {
+    const result = await userService.searchFriends(req.query.name)
+    res.status(result.status).json(result)
+}
+
+module.exports = { signup, login, search }

@@ -1,6 +1,18 @@
 const User = require('./../models/User')
 const jwt = require('jsonwebtoken')
 
+const searchFriends = async (name) => {
+    try {
+        let users = await User.find({ 
+            fullName: {$regex: ".*" + name + ".*", $options:'i'} 
+        })
+        return { status: 200, data: users }
+    } catch(err) {
+        console.error(`Error in user search route ${err}`)
+        return { status: 500, data: null, message: "Internal Server Error"}
+    }
+}
+
 const create = async (body) => {
     try {
         let users = await User.find({ email: body.email })
@@ -46,4 +58,4 @@ const login = async ({email, password}) => {
 
 const signJwt = (_id, email) => jwt.sign({_id, email}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE_TIME})
 
-module.exports = { create, login }
+module.exports = { create, login, searchFriends}

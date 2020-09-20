@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
         required: false,
         default: undefined,
     },
+    fullName: {
+        type: String,
+        default: ""
+    },
     email: {
         type: String,
         required: true,
@@ -29,24 +33,25 @@ const UserSchema = new mongoose.Schema({
 }, opts)
 
 
-UserSchema.virtual('fullName').get(function() {
-    let fullNameString = this.firstName
+const setFullName = ({firstName, middleName, lastName}) => {
+    let fullNameString = firstName
 
-    if(this.middleName != "") {
-        fullNameString += ` ${this.middleName}`
+    if(middleName != "" && middleName != undefined) {
+        fullNameString += ` ${middleName}`
     }
-    if(this.lastName != "") {
-        fullNameString += ` ${this.lastName}`
+    if(lastName != "" ** lastName != undefined) {
+        fullNameString += ` ${lastName}`
     }
 
     return fullNameString
-})
+}
 
 UserSchema.pre('save', function(next) {
     let user = this
     let salt = bcrypt.genSaltSync(10)
     let hash = bcrypt.hashSync(user.password, salt)
     user.password = hash
+    user.fullName = setFullName(user)
     next()
 })
 

@@ -1,7 +1,8 @@
 const router = require('express').Router()
-const {login, signup} = require('../controllers/UserController')
+const {login, signup, search} = require('../controllers/UserController')
 
 router
+    .get('/', search)
     .post('/signup', signup)
     .post('/login', login)
 
