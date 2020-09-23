@@ -1,11 +1,48 @@
 const User = require('./../models/User')
 const jwt = require('jsonwebtoken')
+const { ObjectId } = require('mongoose').Types
 
-const searchFriends = async (name) => {
+const searchFriends = async (name, currentUserId) => {
     try {
-        let users = await User.find({ 
-            fullName: {$regex: ".*" + name + ".*", $options:'i'} 
-        })
+        let users = await User.aggregate([
+            {
+                $match: {
+                    fullName: {$regex: ".*" + name + ".*", $options:'i'}
+                },
+            },
+            {
+                $lookup: {
+                    from: "follows",
+                    let: { 
+                        id: "$_id",
+                        userId: ObjectId(currentUserId)
+                    },
+                    pipeline:[
+                        { 
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$friend", "$$id"] },
+                                        { $eq: ["$user", "$$userId"] }
+                                    ],
+                                }
+                            }
+                        }
+                    ],
+                    as: "follow"
+                },  
+            },
+            {
+                $project: {
+                    _id: 1,
+                    follow: {
+                        $cond: { if: { $isArray: "$follow" }, then: true, else: false}
+                    },
+                    fullName: 1
+                }
+            }
+        ])
+
         return { status: 200, data: users }
     } catch(err) {
         console.error(`Error in user search route ${err}`)

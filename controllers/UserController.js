@@ -11,7 +11,7 @@ const login = async (req, res) => {
 }
 
 const search = async (req, res) => {
-    const result = await userService.searchFriends(req.query.name)
+    const result = await userService.searchFriends(req.query.name, req.user._id)
     res.status(result.status).json(result)
 }
 

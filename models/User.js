@@ -29,7 +29,11 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    // follow: {
+    //     type: mongoose.SchemaTypes.ObjectId,
+    //     ref: 'Follow'
+    // }
 }, opts)
 
 
@@ -64,6 +68,10 @@ UserSchema.methods.authenticate = async function(password) {
         return res
     })
 }
+
+// UserSchema.statics.searchFriends = async function(currentUserId) {
+//     return 
+// }
 
 UserSchema.set('id', false)
 UserSchema.plugin(timestamp)
