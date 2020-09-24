@@ -25,8 +25,13 @@ PostSchema.virtual('imageUrl').get(function() {
     return `${process.env.IMAGE_BASE_URL}${this.imageName}`
 })
 
+
 PostSchema.virtual('timeAgo').get(function() {
+    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
     let time =  Math.floor((new Date().getTime() - new Date(this.createdAt).getTime() ) / 1000)
+    let [thisMonth, thisDate, thisYear] = new Date().toLocaleDateString().split('/')
+    let [postedMonth, postedDate, postedYear] = new Date(this.createdAt).toLocaleDateString().split('/')
     
     if(time < 60) {
         return `${time}s ago`
@@ -36,8 +41,10 @@ PostSchema.virtual('timeAgo').get(function() {
         return `${Math.floor( time / (60 * 60) )}h ago`
     } else if (time < (60 * 60 * 24 * 7)) {
         return `${Math.floor( time / (60 * 60 * 24) )}d ago`
+    } else if (time >= (60 * 60 * 24 * 7) && (thisYear == postedYear)) {
+        return `${postedDate} ${months[postedMonth]}`
     }
-    return `${Math.floor( time / (60 * 60 * 24 * 7))}w ago`
+    return `${postedDate} ${months[postedMonth]} ${postedYear}`
 })
 
 PostSchema.set('id', false)
