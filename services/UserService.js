@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken')
 const { ObjectId } = require('mongoose').Types
 
 const searchFriends = async (name, currentUserId) => {
+    
     try {
+
         let users = await User.aggregate([
             {
-                $match: {
-                    fullName: {$regex: ".*" + name + ".*", $options:'i'}
-                },
+                $match: { fullName: {$regex: ".*" + name + ".*", $options:'i'} }
             },
             {
                 $lookup: {
@@ -21,10 +21,7 @@ const searchFriends = async (name, currentUserId) => {
                         { 
                             $match: {
                                 $expr: {
-                                    $and: [
-                                        { $eq: ["$friend", "$$id"] },
-                                        { $eq: ["$user", "$$userId"] }
-                                    ],
+                                    $and: [ { $eq: ["$friend", "$$id"] }, { $eq: ["$user", "$$userId"] } ],
                                 }
                             }
                         }
@@ -35,8 +32,14 @@ const searchFriends = async (name, currentUserId) => {
             {
                 $project: {
                     _id: 1,
-                    follow: {
-                        $cond: { if: { $isArray: "$follow" }, then: true, else: false}
+                    follow: { 
+                        $cond: { 
+                            if: { 
+                                $anyElementTrue: "$follow" 
+                            }, 
+                            then: true, 
+                            else: false
+                        }
                     },
                     fullName: 1
                 }
