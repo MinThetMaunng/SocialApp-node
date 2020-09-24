@@ -32,7 +32,7 @@ const searchFriends = async (name, currentUserId) => {
             {
                 $project: {
                     _id: 1,
-                    follow: { 
+                    isFollowing: { 
                         $cond: { 
                             if: { 
                                 $anyElementTrue: "$follow" 

@@ -25,6 +25,21 @@ PostSchema.virtual('imageUrl').get(function() {
     return `${process.env.IMAGE_BASE_URL}${this.imageName}`
 })
 
+PostSchema.virtual('timeAgo').get(function() {
+    let time =  Math.floor((new Date().getTime() - new Date(this.createdAt).getTime() ) / 1000)
+    
+    if(time < 60) {
+        return `${time}s ago`
+    } else if (time < (60 * 60)) {
+        return `${Math.floor(time / 60)}m ago`
+    } else if (time < (60 * 60 * 24)) {
+        return `${Math.floor( time / (60 * 60) )}h ago`
+    } else if (time < (60 * 60 * 24 * 7)) {
+        return `${Math.floor( time / (60 * 60 * 24) )}d ago`
+    }
+    return `${Math.floor( time / (60 * 60 * 24 * 7))}w ago`
+})
+
 PostSchema.set('id', false)
 PostSchema.plugin(timestamp)
 
