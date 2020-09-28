@@ -41,6 +41,9 @@ const searchFriends = async (name, currentUserId) => {
                             else: false
                         }
                     },
+                    firstName: 1,
+                    middleName: 1,
+                    lastName: 1,
                     fullName: 1
                 }
             }
