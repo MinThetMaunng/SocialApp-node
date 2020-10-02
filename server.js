@@ -10,7 +10,7 @@ const followRoutes = require('./routes/FollowRoutes')
 
 app.use('/users', userRoutes)
 app.use('/posts', postRoutes)
-app.use('/posts', followRoutes)
+app.use('/follows', followRoutes)
 
 app.listen(port, () => {
     console.log(logs.serverRunning)
