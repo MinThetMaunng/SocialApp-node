@@ -56,6 +56,15 @@ const searchFriends = async (name, currentUserId) => {
     }
 }
 
+const getOne = async (_id) => {
+    try {
+        let user = await User.findById(_id).populate('user')
+        return { status: 200, data: user}
+    } catch(err) {
+        return { status: 404, data: null, message: "User Not Found"}
+    }
+}
+
 const create = async (body) => {
     try {
         let users = await User.find({ email: body.email })
@@ -101,4 +110,4 @@ const login = async ({email, password}) => {
 
 const signJwt = (_id, email) => jwt.sign({_id, email}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE_TIME})
 
-module.exports = { create, login, searchFriends}
+module.exports = { create, login, searchFriends, getOne}

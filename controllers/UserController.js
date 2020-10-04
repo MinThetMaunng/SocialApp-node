@@ -15,4 +15,10 @@ const search = async (req, res) => {
     res.status(result.status).json(result)
 }
 
-module.exports = { signup, login, search }
+const getOne = async (req, res) => {
+    const result = await userService.getOne(req.params.id)
+    res.status(result.status).json(result)
+}
+
+
+module.exports = { signup, login, search, getOne }
