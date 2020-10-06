@@ -18,6 +18,26 @@ const getAll = async () => {
     }
 }
 
+
+const getPosts = async (userId, limit = 0, skip = 0) => {
+    try {
+        let posts = await Post.find({user: userId})
+                        .select('-__v -updatedAt')
+                        .populate('user', '-email -password -__v -createdAt -updatedAt')
+                        .limit(parseInt(limit))
+                        .skip(parseInt(skip))
+                        .sort("-updatedAt")
+
+        let total = await Post.countDocuments({user: userId})
+
+        return { status: 200, data: posts, total }
+    } catch(err) {
+        console.error(`Error in gell all post routes ${err}`)
+        return { status: 500, data: null, message: "Internal Server Error"}
+    }
+}
+
+
 const getOne = async (_id) => {
     try {
         let post = await Post.findById(_id).populate('user')
@@ -77,4 +97,4 @@ const remove = async (_id, userId) => {
     }
 }
 
-module.exports = { getAll, getOne, create, uploadFile, remove }
+module.exports = { getAll, getOne, create, uploadFile, remove, getPosts }

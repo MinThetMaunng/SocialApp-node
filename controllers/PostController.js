@@ -5,6 +5,11 @@ const getAll = async (req, res) => {
     res.status(result.status).json(result)
 }
 
+const getPosts = async (req, res) => {
+    const result = await postService.getPosts(req.query.userId, req.query.limit, req.query.skip)
+    res.status(result.status).json(result)
+}
+
 const getOne = async (req, res) => {
     const result = await postService.getOne(req.params.id)
     res.status(result.status).json(result)
@@ -27,4 +32,4 @@ const remove = async (req, res) => {
 
 
 
-module.exports = { getAll, create, getOne, uploadFile, remove}
+module.exports = { getAll, create, getOne, uploadFile, remove, getPosts}
